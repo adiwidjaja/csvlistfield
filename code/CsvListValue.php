@@ -1,5 +1,5 @@
 <?php
-class CsvListValue extends DataObjectSet {
+class CsvListValue extends ArrayList {
 	
 	protected $fieldnames;
 	protected $delimiter = ";";
@@ -123,7 +123,7 @@ class CsvListValue extends DataObjectSet {
 	 * 
 	 * @return boolean
 	 */
-	function hasValue() {
+	public function hasValue($field, $arguments = null, $cache = true) {
 		return $this->items && count($this->items) > 0;
 	}
 

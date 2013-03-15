@@ -16,11 +16,11 @@ class CsvListField extends TextField {
 			user_error("CsvListField: No field definition given.", E_USER_ERROR);
 		} else {
 			//Must be fieldset or array
-			$this->fieldset = new FieldSet();
+			$this->fieldset = new FieldList();
 			$this->fieldnames = array();
 			foreach($fields as $field) {
-				$this->fieldnames[] = $field->Name();
-				$combinedname = $this->Name()."[%Pos][".$field->Name()."]";
+				$this->fieldnames[] = $field->getName();
+				$combinedname = $this->getName()."[%Pos][".$field->getName()."]";
 				$this->fieldnames_combined[] = $combinedname;
 				//$field->setName($combinedname);
 				$this->fieldset->push($field);
@@ -71,10 +71,10 @@ class CsvListField extends TextField {
 			if(array_key_exists($field->id(), $row)) { //Strange case when editing.
 				$field->setValue($row[$field->id()]);
 			} else {
-				$field->setValue($row[$field->Name()]);
+				$field->setValue($row[$field->getName()]);
 			}
 
-                    $item[$field->Name()] = $field->value;
+                    $item[$field->getName()] = $field->Value();
                     $count++;
                 }
                 $result[] = $item;
@@ -83,7 +83,7 @@ class CsvListField extends TextField {
         }
 
 	function NewFields() {
-		$fields = new DataObjectSet();
+		$fields = new ArrayList();
 		foreach($this->fieldset as $field) {
 			$newfield = clone $field;
 			$newfield->setForm($this->form);
@@ -93,13 +93,13 @@ class CsvListField extends TextField {
 	}
 
 	function FieldsForForm() {
-		$result = new DataObjectSet();
+		$result = new ArrayList();
 		if(!$this->value) {
 			$pos = 1;
-			$fields = new FieldSet();
+			$fields = new FieldList();
 			foreach($this->fieldset as $field) {
 				$newfield = clone $field;
-				$combinedname = $this->Name()."[$pos][".$field->Name()."]";
+				$combinedname = $this->getName()."[$pos][".$field->getName()."]";
 				$newfield->setName($combinedname);
 				$newfield->setForm($this->form);
 				$fields->push($newfield);
@@ -111,11 +111,11 @@ class CsvListField extends TextField {
 		}
 		$pos = 0;
 		foreach($this->value as $value) {
-			$fields = new FieldSet();
+			$fields = new FieldList();
 			foreach($this->fieldset as $field) {
 				$newfield = clone $field;
-				$newfield->setValue($value[$field->Name()]);
-				$combinedname = $this->Name()."[$pos][".$field->Name()."]";
+				$newfield->setValue($value[$field->name]);
+				$combinedname = $this->Name."[$pos][".$field->Name."]";
 				$newfield->setName($combinedname);
 				$newfield->setForm($this->form);
 				$fields->push($newfield);
@@ -132,12 +132,12 @@ class CsvListField extends TextField {
 		return $this->fieldset;
 	}
 
-	function Field() {
+	public function Field($properties = array()) {
 		//print_r($this->dataValue());
 		return $this->renderWith($this->template);
 	}
 
-	function FieldHolder() {
+	public function FieldHolder($properties = array()) {
 		$holder = parent::FieldHolder();
 		return $holder;
 	}
